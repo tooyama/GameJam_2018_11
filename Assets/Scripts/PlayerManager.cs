@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerManager : MonoBehaviour 
 {
@@ -17,7 +18,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     string effectObjectName;
     [SerializeField]
-    Transform[] startPositions; 
+    Transform[] startPositions;
+    [SerializeField]
+    Image[] bombImages;
 
     GameManager gameManager;
     ControllerManager controllerManager;
@@ -29,6 +32,8 @@ public class PlayerManager : MonoBehaviour
     bool isRight;
     bool canMove = false;
     bool isBomb = false;
+
+    int bombCount = 3;
 
     void Start()
     {
@@ -76,6 +81,25 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    void setBomb()
+    {
+        --bombCount;
+        GameObject trap = Instantiate(trapObject, transform.position, trapObject.transform.rotation) as GameObject;
+        trap.GetComponent<BombManager>().Id = id;
+
+        for (int i = 0; i < bombImages.Length; ++i)
+        {
+            if(i < bombCount)
+            {
+                bombImages[i].enabled = true;
+            }
+            else
+            {
+                bombImages[i].enabled = false;
+            }
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if(other.tag.Equals("Player"))
@@ -110,16 +134,14 @@ public class PlayerManager : MonoBehaviour
             Instantiate(markObject, transform.position, transform.rotation);
         }
 
-        if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_UP"))
+        if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_UP") && 0 < bombCount)
         {
-            GameObject trap = Instantiate(trapObject, transform.position, trapObject.transform.rotation) as GameObject;
-            trap.GetComponent<BombManager>().Id = id;
+            setBomb();
         }
 
-        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_DOWN"))
+        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_DOWN") && 0 < bombCount)
         {
-            GameObject trap = Instantiate(trapObject, transform.position, trapObject.transform.rotation);
-            trap.GetComponent<BombManager>().Id = id;
+            setBomb();
         }
     }
 
