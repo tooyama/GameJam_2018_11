@@ -124,24 +124,27 @@ public class PlayerManager : MonoBehaviour
 
     void Update()
     {
-        if(isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_RIGHT"))
+        if (canMove)
         {
-            Instantiate(markObject,transform.position,transform.rotation);
-        }
+            if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_RIGHT"))
+            {
+                Instantiate(markObject, transform.position, transform.rotation);
+            }
 
-        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_LEFT"))
-        {
-            Instantiate(markObject, transform.position, transform.rotation);
-        }
+            if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_LEFT"))
+            {
+                Instantiate(markObject, transform.position, transform.rotation);
+            }
 
-        if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_UP") && 0 < bombCount)
-        {
-            setBomb();
-        }
+            if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_UP") && 0 < bombCount)
+            {
+                setBomb();
+            }
 
-        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_DOWN") && 0 < bombCount)
-        {
-            setBomb();
+            if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_DOWN") && 0 < bombCount)
+            {
+                setBomb();
+            }
         }
     }
 

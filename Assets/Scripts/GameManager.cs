@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour 
 {
     [SerializeField]
-    bool isChangeCamera = true;
-    [SerializeField]
     bool isRumble = true;
     [SerializeField]
     float changeTime = 5.0f;
@@ -23,7 +21,9 @@ public class GameManager : MonoBehaviour
     float countTime = 0;
     float raitoOfUI;
     float defaultDis;
+    bool isStart = false;
     bool isEnd = false;
+    bool isChangeCamera = false;
 
 	void Start () 
     {
@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
             if (p.Id == 0)
             {
                 cameraManager.ChangeParent(p.transform);
-                p.CanMove = true;
             }
         }
 
@@ -79,6 +78,24 @@ public class GameManager : MonoBehaviour
 
 	void Update () 
     {
+        if(controllerManager.GetButtonName(true) == "PLUS")
+        {
+            if(!isStart)
+            {
+                isStart = true;
+                isChangeCamera = true;
+                resultText.text = "";
+
+                foreach (PlayerManager p in playerManagers)
+                {
+                    if (p.Id == 0)
+                    {
+                        p.CanMove = true;
+                    }
+                }
+            }
+        }
+
         if (isChangeCamera && !isEnd)
         {
             countTime += Time.deltaTime;
@@ -97,6 +114,8 @@ public class GameManager : MonoBehaviour
                 playerManagers[Mathf.Abs(targetId)].CanMove = true;
             }
         }
+
+
 	}
 
     IEnumerator WaitForRumble()

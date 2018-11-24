@@ -1598,7 +1598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1618,7 +1618,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: "Press\u300C+\u300DKey"
 --- !u!222 &477128155
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6978,8 +6978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b98e92bbd75f5468296e94d1392cb4fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isChangeCamera: 1
-  isRumble: 0
+  isRumble: 1
   changeTime: 5
 --- !u!4 &1737601757
 Transform:
