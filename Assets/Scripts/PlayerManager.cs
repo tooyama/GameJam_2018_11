@@ -11,6 +11,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     float speed = 1.0f;
 
+    GameManager gameManager;
     ControllerManager controllerManager;
     Animator animator;
     Rigidbody rb;
@@ -28,6 +29,7 @@ public class PlayerManager : MonoBehaviour
             isRight = false;
         }
 
+        gameManager = transform.parent.GetComponent<GameManager>();
         animator = GetComponent<Animator>();
         controllerManager = transform.parent.GetComponent<ControllerManager>();
         rb = GetComponent<Rigidbody>();
@@ -41,6 +43,15 @@ public class PlayerManager : MonoBehaviour
     public void SetMove(bool _canMove)
     {
         canMove = _canMove;
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag.Equals("Player"))
+        {
+            canMove = false;
+            gameManager.End();
+        }
     }
 
     void FixedUpdate()

@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     CameraManager cameraManager;
     ControllerManager controllerManager;
     RectTransform ui;
+    Text resultText;
 
     PlayerManager[] playerManagers;
 
@@ -22,12 +23,14 @@ public class GameManager : MonoBehaviour
     float countTime = 0;
     float raitoOfUI;
     float defaultDis;
+    bool isEnd = false;
 
 	void Start () 
     {
         cameraManager = GameObject.Find("Main Camera").GetComponent<CameraManager>();
 
         ui = GameObject.Find("UI/Timer").GetComponent<RectTransform>();
+        resultText = GameObject.Find("UI/Text").GetComponent<Text>();
         raitoOfUI = ui.localScale.x/changeTime;
 
         playerManagers = GetComponentsInChildren<PlayerManager>();
@@ -49,9 +52,23 @@ public class GameManager : MonoBehaviour
         }
 	}
 	
+    public void End()
+    {
+        isEnd = true;
+
+        if(targetId == 0)
+        {
+            resultText.text = "1P Win !";
+        }
+        else
+        {
+            resultText.text = "2P Win !";
+        }
+    }
+
 	void Update () 
     {
-        if (isChangeCamera)
+        if (isChangeCamera && !isEnd)
         {
             countTime += Time.deltaTime;
 
@@ -75,21 +92,24 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(2.0f);
 
-        float dis = Vector3.Distance(playerManagers[0].transform.position, playerManagers[1].transform.position);
+        if (!isEnd)
+        {
+            float dis = Vector3.Distance(playerManagers[0].transform.position, playerManagers[1].transform.position);
 
-        if (20.0f < (defaultDis - dis))
-        {
-            controllerManager.Rumble(3.0f);
-        }
-        else if (15.0f < (defaultDis - dis))
-        {
-            controllerManager.Rumble(1.0f);
-        }
-        else if (7.5f < (defaultDis - dis))
-        {
-            controllerManager.Rumble(0.1f);
-        }
+            if (defaultDis*0.9f < (defaultDis - dis))
+            {
+                controllerManager.Rumble(3.0f);
+            }
+            else if (defaultDis * 0.7f  < (defaultDis - dis))
+            {
+                controllerManager.Rumble(1.0f);
+            }
+            else if (defaultDis * 0.4f  < (defaultDis - dis))
+            {
+                controllerManager.Rumble(0.1f);
+            }
 
-        StartCoroutine(WaitForRumble());
+            StartCoroutine(WaitForRumble());
+        }
     }
 }
