@@ -6221,6 +6221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   speed: 2
+  objectName: Fish_Blue
   startPositions:
   - {fileID: 1308260374}
   - {fileID: 811725244}
@@ -7570,6 +7571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 0
   speed: 2
+  objectName: Fish_Red
   startPositions:
   - {fileID: 1246707171}
   - {fileID: 1964832468}

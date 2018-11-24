@@ -11,12 +11,15 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     float speed = 1.0f;
     [SerializeField]
+    string objectName;
+    [SerializeField]
     Transform[] startPositions; 
 
     GameManager gameManager;
     ControllerManager controllerManager;
     Animator animator;
     Rigidbody rb;
+    GameObject markObject;
     bool isRight;
     bool canMove = false;
 
@@ -37,6 +40,7 @@ public class PlayerManager : MonoBehaviour
         animator = GetComponent<Animator>();
         controllerManager = transform.parent.GetComponent<ControllerManager>();
         rb = GetComponent<Rigidbody>();
+        markObject = Resources.Load(objectName) as GameObject;
     }
 
     public int GetId()
@@ -55,6 +59,19 @@ public class PlayerManager : MonoBehaviour
         {
             canMove = false;
             gameManager.End();
+        }
+    }
+
+    void Update()
+    {
+        if(isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_RIGHT"))
+        {
+            Instantiate(markObject,transform.position,transform.rotation);
+        }
+
+        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_LEFT"))
+        {
+            Instantiate(markObject, transform.position, transform.rotation);
         }
     }
 
