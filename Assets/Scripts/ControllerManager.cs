@@ -7,104 +7,72 @@ public class ControllerManager : MonoBehaviour
 {
     [SerializeField]
     Vector2 rumbleAngle = Vector2.zero;
-    [SerializeField]
-    float rumbleForce = 0.5f;
 
-    private static readonly Joycon.Button[] m_buttons =
-        Enum.GetValues(typeof(Joycon.Button)) as Joycon.Button[];
+    static readonly Joycon.Button[] m_buttons =Enum.GetValues(typeof(Joycon.Button)) as Joycon.Button[];
 
-    private List<Joycon> m_joycons;
-    private Joycon m_joyconL;
-    private Joycon m_joyconR;
-    private Joycon.Button? m_pressedButtonL;
-    private Joycon.Button? m_pressedButtonR;
+    List<Joycon> m_joycons;
+    Joycon joyconL;
+    Joycon joyconR;
+    Joycon.Button? pressedButtonL;
+    Joycon.Button? pressedButtonR;
 
-    private void Start()
+    void Start()
     {
         m_joycons = JoyconManager.Instance.j;
 
         if (m_joycons == null || m_joycons.Count <= 0) return;
 
-        m_joyconL = m_joycons.Find(c => c.isLeft);
-        m_joyconR = m_joycons.Find(c => !c.isLeft);
+        joyconL = m_joycons.Find(c => c.isLeft);
+        joyconR = m_joycons.Find(c => !c.isLeft);
     }
 
-    private void Update()
+    public void Rumble(float force)
     {
-        m_pressedButtonL = null;
-        m_pressedButtonR = null;
+        joyconR.SetRumble(rumbleAngle.x, rumbleAngle.y, force, 200);
+        joyconL.SetRumble(rumbleAngle.x, rumbleAngle.y, force, 200);
+    }
+
+    public Vector2 GetStick(bool isRight)
+    {
+        if (isRight)
+        {
+            return new Vector2(joyconR.GetStick()[1], joyconR.GetStick()[0]);
+        }
+        else
+        {
+            return new Vector2(-joyconL.GetStick()[1], -joyconL.GetStick()[0]);
+        }
+    }
+
+    public String GetButtonName(bool isRight)
+    {
+        if (isRight)
+        {
+            return pressedButtonR.ToString();
+        }
+        else
+        {
+            return pressedButtonL.ToString();
+        }
+    }
+
+    void Update()
+    {
+        pressedButtonL = null;
+        pressedButtonR = null;
 
         if (m_joycons == null || m_joycons.Count <= 0) return;
 
         foreach (var button in m_buttons)
         {
-            if (m_joyconL.GetButton(button))
+            if (joyconL.GetButton(button))
             {
-                m_pressedButtonL = button;
+                pressedButtonL = button;
             }
-            if (m_joyconR.GetButton(button))
+            if (joyconR.GetButton(button))
             {
-                m_pressedButtonR = button;
+                pressedButtonR = button;
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            m_joyconL.SetRumble(rumbleAngle.x, rumbleAngle.y, rumbleForce, 200);
-        }
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            m_joyconR.SetRumble(rumbleAngle.x, rumbleAngle.y, rumbleForce, 200);
-        }
-    }
-
-    private void OnGUI()
-    {
-        var style = GUI.skin.GetStyle("label");
-        style.fontSize = 24;
-
-        if (m_joycons == null || m_joycons.Count <= 0)
-        {
-            GUILayout.Label("Joy-Con が接続されていません");
-            return;
-        }
-
-        if (!m_joycons.Any(c => c.isLeft))
-        {
-            GUILayout.Label("Joy-Con (L) が接続されていません");
-            return;
-        }
-
-        if (!m_joycons.Any(c => !c.isLeft))
-        {
-            GUILayout.Label("Joy-Con (R) が接続されていません");
-            return;
-        }
-
-        GUILayout.BeginHorizontal(GUILayout.Width(960));
-
-        foreach (var joycon in m_joycons)
-        {
-            var isLeft = joycon.isLeft;
-            var name = isLeft ? "Joy-Con (L)" : "Joy-Con (R)";
-            var key = isLeft ? "Z キー" : "X キー";
-            var button = isLeft ? m_pressedButtonL : m_pressedButtonR;
-            var stick = joycon.GetStick();
-            var gyro = joycon.GetGyro();
-            var accel = joycon.GetAccel();
-            var orientation = joycon.GetVector();
-
-            GUILayout.BeginVertical(GUILayout.Width(480));
-            GUILayout.Label(name);
-            GUILayout.Label(key + "：振動");
-            GUILayout.Label("押されているボタン：" + button);
-            GUILayout.Label(string.Format("スティック：({0}, {1})", stick[0], stick[1]));
-            GUILayout.Label("ジャイロ：" + gyro);
-            GUILayout.Label("加速度：" + accel);
-            GUILayout.Label("傾き：" + orientation);
-            GUILayout.EndVertical();
-        }
-
-        GUILayout.EndHorizontal();
     }
 }
