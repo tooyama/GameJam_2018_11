@@ -15,6 +15,8 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     string trapObjectName;
     [SerializeField]
+    string effectObjectName;
+    [SerializeField]
     Transform[] startPositions; 
 
     GameManager gameManager;
@@ -23,6 +25,7 @@ public class PlayerManager : MonoBehaviour
     Rigidbody rb;
     GameObject markObject;
     GameObject trapObject;
+    GameObject effectObject;
     bool isRight;
     bool canMove = false;
     bool isBomb = false;
@@ -46,6 +49,7 @@ public class PlayerManager : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         markObject = Resources.Load(markObjectName) as GameObject;
         trapObject = Resources.Load(trapObjectName) as GameObject;
+        effectObject = Resources.Load(effectObjectName) as GameObject;
     }
 
     public int Id
@@ -87,6 +91,9 @@ public class PlayerManager : MonoBehaviour
                 Destroy(other.gameObject);
                 isBomb = true;
                 StartCoroutine(WaitForMove());
+
+                GameObject effect = Instantiate(effectObject, transform.position, transform.rotation) as GameObject;
+                //Destroy(effectObject, 2.0f);
             }
         }
     }

@@ -6223,6 +6223,7 @@ MonoBehaviour:
   speed: 2
   markObjectName: Fish_Blue
   trapObjectName: Bomb_Blue
+  effectObjectName: Bomb
   startPositions:
   - {fileID: 1308260374}
   - {fileID: 811725244}
@@ -7574,6 +7575,7 @@ MonoBehaviour:
   speed: 2
   markObjectName: Fish_Red
   trapObjectName: Bomb_Red
+  effectObjectName: Bomb
   startPositions:
   - {fileID: 1246707171}
   - {fileID: 1964832468}
