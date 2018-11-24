@@ -36,10 +36,10 @@ public class GameManager : MonoBehaviour
         playerManagers = GetComponentsInChildren<PlayerManager>();
         foreach(PlayerManager p in playerManagers)
         {
-            if (p.GetId() == 0)
+            if (p.Id == 0)
             {
                 cameraManager.ChangeParent(p.transform);
-                p.SetMove(true);
+                p.CanMove = true;
             }
         }
 
@@ -51,18 +51,29 @@ public class GameManager : MonoBehaviour
             StartCoroutine(WaitForRumble());
         }
 	}
-	
-    public void End()
-    {
-        isEnd = true;
 
-        if(targetId == 0)
+    public bool End 
+    {
+        get 
         {
-            resultText.text = "1P Win !";
+            return isEnd;
         }
-        else
+
+        set
         {
-            resultText.text = "2P Win !";
+            isEnd = value;
+
+            if (isEnd)
+            {
+                if (targetId == 0)
+                {
+                    resultText.text = "1P Win !";
+                }
+                else
+                {
+                    resultText.text = "2P Win !";
+                }
+            }
         }
     }
 
@@ -78,12 +89,12 @@ public class GameManager : MonoBehaviour
             {
                 countTime = 0;
 
-                playerManagers[Mathf.Abs(targetId)].SetMove(false);
+                playerManagers[Mathf.Abs(targetId)].CanMove = false;
 
                 targetId = ~targetId;
                 cameraManager.ChangeParent(playerManagers[Mathf.Abs(targetId)].transform);
 
-                playerManagers[Mathf.Abs(targetId)].SetMove(true);
+                playerManagers[Mathf.Abs(targetId)].CanMove = true;
             }
         }
 	}

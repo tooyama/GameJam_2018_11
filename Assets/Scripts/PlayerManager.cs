@@ -11,7 +11,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField]
     float speed = 1.0f;
     [SerializeField]
-    string objectName;
+    string markObjectName;
+    [SerializeField]
+    string trapObjectName;
     [SerializeField]
     Transform[] startPositions; 
 
@@ -20,8 +22,10 @@ public class PlayerManager : MonoBehaviour
     Animator animator;
     Rigidbody rb;
     GameObject markObject;
+    GameObject trapObject;
     bool isRight;
     bool canMove = false;
+    bool isBomb = false;
 
     void Start()
     {
@@ -40,17 +44,32 @@ public class PlayerManager : MonoBehaviour
         animator = GetComponent<Animator>();
         controllerManager = transform.parent.GetComponent<ControllerManager>();
         rb = GetComponent<Rigidbody>();
-        markObject = Resources.Load(objectName) as GameObject;
+        markObject = Resources.Load(markObjectName) as GameObject;
+        trapObject = Resources.Load(trapObjectName) as GameObject;
     }
 
-    public int GetId()
+    public int Id
     {
-        return id;
+        get
+        {
+            return id;
+        }
+        set
+        {
+            id = value;
+        }
     }
 
-    public void SetMove(bool _canMove)
+    public bool CanMove
     {
-        canMove = _canMove;
+        get
+        {
+            return canMove;
+        }
+        set
+        {
+            canMove = value;
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -58,7 +77,17 @@ public class PlayerManager : MonoBehaviour
         if(other.tag.Equals("Player"))
         {
             canMove = false;
-            gameManager.End();
+            gameManager.End = true;
+        }
+
+        if (other.tag.Equals("Bomb"))
+        {
+            if(other.GetComponent<BombManager>().Id != id)
+            {
+                Destroy(other.gameObject);
+                isBomb = true;
+                StartCoroutine(WaitForMove());
+            }
         }
     }
 
@@ -73,11 +102,23 @@ public class PlayerManager : MonoBehaviour
         {
             Instantiate(markObject, transform.position, transform.rotation);
         }
+
+        if (isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_UP"))
+        {
+            GameObject trap = Instantiate(trapObject, transform.position, trapObject.transform.rotation) as GameObject;
+            trap.GetComponent<BombManager>().Id = id;
+        }
+
+        if (!isRight && controllerManager.GetButtonName(isRight).Equals("DPAD_DOWN"))
+        {
+            GameObject trap = Instantiate(trapObject, transform.position, trapObject.transform.rotation);
+            trap.GetComponent<BombManager>().Id = id;
+        }
     }
 
     void FixedUpdate()
     {
-        if (canMove)
+        if (canMove && !isBomb)
         {
             float x = controllerManager.GetStick(isRight).x;
             float z = controllerManager.GetStick(isRight).y;
@@ -113,5 +154,12 @@ public class PlayerManager : MonoBehaviour
 
             rb.velocity = distance * speed;
         }
+    }
+
+    IEnumerator WaitForMove()
+    {
+        yield return new WaitForSeconds(5.0f);
+
+        isBomb = false;
     }
 }
