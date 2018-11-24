@@ -10,6 +10,8 @@ public class PlayerManager : MonoBehaviour
     int id = 0;
     [SerializeField]
     float speed = 1.0f;
+    [SerializeField]
+    Transform[] startPositions; 
 
     GameManager gameManager;
     ControllerManager controllerManager;
@@ -28,6 +30,8 @@ public class PlayerManager : MonoBehaviour
         {
             isRight = false;
         }
+
+        transform.position = startPositions[Random.Range(0, startPositions.Length)].position;
 
         gameManager = transform.parent.GetComponent<GameManager>();
         animator = GetComponent<Animator>();
